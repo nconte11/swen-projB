@@ -17,6 +17,7 @@ public class MyMailPool implements IMailPool {
 		int priority;
 		int destination;
 		boolean heavy;
+		boolean fragile;
 		MailItem mailItem;
 		// Use stable sort to keep arrival time relative positions
 		
@@ -24,8 +25,10 @@ public class MyMailPool implements IMailPool {
 			priority = (mailItem instanceof PriorityMailItem) ? ((PriorityMailItem) mailItem).getPriorityLevel() : 1;
 			heavy = mailItem.getWeight() >= 2000;
 			destination = mailItem.getDestFloor();
+			fragile = mailItem.getFragile();
 			this.mailItem = mailItem;
 		}
+
 	}
 	
 	public class ItemComparator implements Comparator<Item> {
@@ -46,7 +49,9 @@ public class MyMailPool implements IMailPool {
 	}
 	
 	private LinkedList<Item> pool;
-	private static final int MAX_TAKE = 4;
+	
+	// no longer static final, depends on robot
+	private int MAX_TAKE;
 	private LinkedList<Robot> robots;
 	private int lightCount;
 
@@ -71,9 +76,25 @@ public class MyMailPool implements IMailPool {
 	
 	private void fillStorageTube(Robot robot) throws FragileItemBrokenException {
 		StorageTube tube = robot.getTube();
-		StorageTube temp = new StorageTube();
-		try { // Get as many items as available or as fit
-				if (robot.isStrong()) {
+		this.MAX_TAKE = robot.getTube().MAXIMUM_CAPACITY;
+		
+		// temp storagetube now has the same max capacity as the robot
+		StorageTube temp = new StorageTube(robot.getTube().MAXIMUM_CAPACITY);
+		
+		try { // check if it's a careful robot, if it is and there are fragile mail items, pick one
+			if (robot.isCareful()) {
+				ListIterator<Item> i = pool.listIterator();
+				while (i != null) {
+					Item item = pool.peek();
+					if (item.fragile) {
+						temp.addItem(item.mailItem);
+						
+						break;
+					}
+					i.next();
+				}
+				
+			} else if (robot.isStrong()) {
 					while(temp.getSize() < MAX_TAKE && !pool.isEmpty() ) {
 						Item item = pool.remove();
 						if (!item.heavy) lightCount--;
