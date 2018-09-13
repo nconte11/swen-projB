@@ -96,15 +96,23 @@ public class MyMailPool implements IMailPool {
 				
 			} else if (robot.isStrong()) {
 					while(temp.getSize() < MAX_TAKE && !pool.isEmpty() ) {
+						
+						// make sure it isn't 'fragile' mail
 						Item item = pool.remove();
-						if (!item.heavy) lightCount--;
-						temp.addItem(item.mailItem);
+						if (item.fragile) {
+							pool.add(pool.size(), item);
+						} else if (!item.heavy) lightCount--;
+							temp.addItem(item.mailItem);
 					}
 				} else {
+					
+					// make sure it isn't 'fragile'
+					
 					ListIterator<Item> i = pool.listIterator();
+					
 					while(temp.getSize() < MAX_TAKE && lightCount > 0) {
 						Item item = i.next();
-						if (!item.heavy) {
+						if (!item.heavy && !item.fragile) {
 							temp.addItem(item.mailItem);
 							i.remove();
 							lightCount--;
