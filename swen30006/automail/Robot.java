@@ -10,7 +10,12 @@ import java.util.TreeMap;
 /**
  * The robot delivers mail!
  */
-public class Robot {
+public abstract class Robot {
+	
+	// bigRobot = carries 6, strong
+	// careful robot = carries 3 & fragile, strong, half speed
+	// standard = carries 4, strong 
+	// weak = carries 3, weak
 
 	StorageTube tube;
     IMailDelivery delivery;
@@ -19,13 +24,15 @@ public class Robot {
     public enum RobotState { DELIVERING, WAITING, RETURNING }
     public RobotState current_state;
     private int current_floor;
-    private int destination_floor;
+
+	private int destination_floor;
     private IMailPool mailPool;
     private boolean receivedDispatch;
+    
     private boolean strong;
+    private boolean careful;
     
     private MailItem deliveryItem;
-    
     private int deliveryCounter;
     
 
@@ -37,16 +44,12 @@ public class Robot {
      * @param mailPool is the source of mail items
      * @param strong is whether the robot can carry heavy items
      */
-    public Robot(IMailDelivery delivery, IMailPool mailPool, boolean strong){
+    public Robot(){
     	id = "R" + hashCode();
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
-        tube = new StorageTube();
-        this.delivery = delivery;
-        this.mailPool = mailPool;
         this.receivedDispatch = false;
-        this.strong = strong;
         this.deliveryCounter = 0;
     }
     
@@ -131,7 +134,7 @@ public class Robot {
      * Generic function that moves the robot towards the destination
      * @param destination the floor towards which the robot is moving
      */
-    private void moveTowards(int destination) throws FragileItemBrokenException {
+    public void moveTowards(int destination) throws FragileItemBrokenException {
         if (deliveryItem != null && deliveryItem.getFragile() || !tube.isEmpty() && tube.peek().getFragile()) throw new FragileItemBrokenException();
         if(current_floor < destination){
             current_floor++;
@@ -173,4 +176,43 @@ public class Robot {
 		if (hash == null) { hash = count++; hashMap.put(hash0, hash); }
 		return hash;
 	}
+	
+	public void setMailPool(IMailPool mailPool) {
+		this.mailPool = mailPool;
+	}
+	
+	public void setDelivery(IMailDelivery delivery) {
+		this.delivery = delivery;
+	}
+	
+    public int getCurrent_floor() {
+		return current_floor;
+	}
+
+	public void setCurrent_floor(int current_floor) {
+		this.current_floor = current_floor;
+	}
+
+	public MailItem getDeliveryItem() {
+		return deliveryItem;
+	}
+
+	public void setDeliveryItem(MailItem deliveryItem) {
+		this.deliveryItem = deliveryItem;
+	}
+
+	public boolean isCareful() {
+		return careful;
+	}
+
+	public void setCareful(boolean careful) {
+		this.careful = careful;
+	}
+
+	public void setStrong(boolean strong) {
+		this.strong = strong;
+	}
+	
+	
+	
 }
