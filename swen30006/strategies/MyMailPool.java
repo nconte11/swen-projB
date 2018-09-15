@@ -10,6 +10,7 @@ import automail.PriorityMailItem;
 import automail.Robot;
 import automail.StorageTube;
 import exceptions.TubeFullException;
+//import strategies.MyMailPool.Item;
 import exceptions.FragileItemBrokenException;
 
 public class MyMailPool implements IMailPool {
@@ -25,10 +26,9 @@ public class MyMailPool implements IMailPool {
 			priority = (mailItem instanceof PriorityMailItem) ? ((PriorityMailItem) mailItem).getPriorityLevel() : 1;
 			heavy = mailItem.getWeight() >= 2000;
 			destination = mailItem.getDestFloor();
-			fragile = mailItem.getFragile();
 			this.mailItem = mailItem;
+			this.fragile = mailItem.getFragile();
 		}
-
 	}
 	
 	public class ItemComparator implements Comparator<Item> {
@@ -49,8 +49,6 @@ public class MyMailPool implements IMailPool {
 	}
 	
 	private LinkedList<Item> pool;
-	
-	// no longer static final, depends on robot
 	private int MAX_TAKE;
 	private LinkedList<Robot> robots;
 	private int lightCount;
@@ -81,37 +79,42 @@ public class MyMailPool implements IMailPool {
 		// temp storagetube now has the same max capacity as the robot
 		StorageTube temp = new StorageTube(robot.getTube().MAXIMUM_CAPACITY);
 		
-		try { // check if it's a careful robot, if it is and there are fragile mail items, pick one
+		try { 
+			// check if it's a careful robot, go through the pool to find a fragile item		
 			if (robot.isCareful()) {
 				ListIterator<Item> i = pool.listIterator();
-				while (i != null) {
-					Item item = pool.peek();
+				while (tube.isEmpty() && i.hasNext()) {
+					Item item = i.next();
 					if (item.fragile) {
 						temp.addItem(item.mailItem);
-						
-						break;
+						if (!item.heavy) lightCount--;
+						i.remove();
 					}
-					i.next();
 				}
+			}
+			
+			// if the tube isn't empty, it's a careful robot holding a fragile item
+			if (tube.isEmpty()) {
 				
-			} else if (robot.isStrong()) {
-					while(temp.getSize() < MAX_TAKE && !pool.isEmpty() ) {
-						
-						// make sure it isn't 'fragile' mail
-						Item item = pool.remove();
-						if (item.fragile) {
-							pool.add(pool.size(), item);
-						} else if (!item.heavy) lightCount--;
+				if (robot.isStrong()) {
+					ListIterator<Item> i = pool.listIterator();
+					// if tube isn't full, and the robot hasn't gone through the whole list
+					while(temp.getSize() < MAX_TAKE && i.hasNext() ) {
+						Item item = i.next();
+						if (!item.fragile) {
 							temp.addItem(item.mailItem);
+							if (!item.heavy) lightCount--;
+							i.remove();
+						}
 					}
 				} else {
-					
-					// make sure it isn't 'fragile'
-					
+
 					ListIterator<Item> i = pool.listIterator();
 					
-					while(temp.getSize() < MAX_TAKE && lightCount > 0) {
+					// stop when they tube is full, 
+					while(temp.getSize() < MAX_TAKE && lightCount > 0 && i.hasNext()) {
 						Item item = i.next();
+
 						if (!item.heavy && !item.fragile) {
 							temp.addItem(item.mailItem);
 							i.remove();
@@ -123,12 +126,12 @@ public class MyMailPool implements IMailPool {
 					while (!temp.isEmpty()) tube.addItem(temp.pop());
 					robot.dispatch();
 				}
+			}
 		}
 		catch(TubeFullException e){
 			e.printStackTrace();
 		}
 	}
-
 	@Override
 	public void registerWaiting(Robot robot) { // assumes won't be there
 		if (robot.isStrong()) {

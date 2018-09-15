@@ -1,17 +1,15 @@
 package automail;
 
 import exceptions.FragileItemBrokenException;
+import strategies.IMailPool;
 
 public class CarefulRobot extends Robot {
 	
 	private int MAX_CAPACITY = 3;
 
-	public CarefulRobot() {
-		super();
-		super.setStrong(true);
-		super.setCareful(true);
-		// TODO Auto-generated constructor stub
-		tube = new StorageTube(this.MAX_CAPACITY);
+	public CarefulRobot(IMailDelivery delivery, IMailPool mailPool, boolean strong, boolean careful) {
+		super(delivery, mailPool, strong, careful);
+		super.tube = new StorageTube(this.MAX_CAPACITY);
 		
 	}
 	
