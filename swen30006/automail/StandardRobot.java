@@ -1,10 +1,10 @@
 package automail;
 
-public class StrongRobot extends Robot {
+public class StandardRobot extends Robot {
 	
 	private int MAX_CAPACITY = 4;
 
-	public StrongRobot() {
+	public StandardRobot() {
 		super();
 		super.setStrong(true);
 		super.setCareful(false);

@@ -34,8 +34,8 @@ public class Simulation {
     public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
     	Properties automailProperties = new Properties();
 		// Default properties
-    	// automailProperties.setProperty("Robots", "Big,Careful,Standard,Weak");
-    	automailProperties.setProperty("Robots", "Standard");
+    	 automailProperties.setProperty("Robots", "Big,Careful,Standard,Weak");
+//    	automailProperties.setProperty("Robots", "Standard");
     	automailProperties.setProperty("MailPool", "strategies.SimpleMailPool");
     	automailProperties.setProperty("Floors", "10");
     	automailProperties.setProperty("Fragile", "false");
@@ -93,7 +93,7 @@ public class Simulation {
         }
         Integer seed = seedMap.get(true);
         System.out.printf("Seed: %s%n", seed == null ? "null" : seed.toString());
-        Automail automail = new Automail(mailPool, new ReportDelivery());
+        Automail automail = new Automail(mailPool, new ReportDelivery(), automailProperties.getProperty("Robots"));
         MailGenerator mailGenerator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seedMap, fragile);
         
         /** Initiate all the mail */
@@ -104,7 +104,7 @@ public class Simulation {
             /* priority = */ mailGenerator.step();
             try {
                 automail.mailPool.step();
-				for (int i=0; i<3; i++) automail.robot[i].step();
+				for (int i=0; i<3; i++) automail.robotList[i].step();
 			} catch (ExcessiveDeliveryException|ItemTooHeavyException|FragileItemBrokenException e) {
 				e.printStackTrace();
 				System.out.println("Simulation unable to complete.");
