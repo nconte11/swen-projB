@@ -207,6 +207,7 @@ public class MyMailPool implements IMailPool {
 	@Override
 	public void deregisterWaiting(Robot robot) {
 		allRobots.remove(robot);
+		robot.setHasFragile(false);
 	}
 
 }
