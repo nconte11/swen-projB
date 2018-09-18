@@ -55,11 +55,13 @@ public class MyMailPool implements IMailPool {
 		StorageTube tube = robot.getTube();
 		this.MAX_TAKE = robot.getTube().MAXIMUM_CAPACITY;
 		
+		// Create a arraylist to hold the items
 		ArrayList<MailItem> temp = new ArrayList<MailItem>(MAX_TAKE);
 		Boolean priority = false;
 		
 		try {
 			
+			// Grab any priority items that it can
 			for (MailItem i : priorityItems) {
 				if (temp.size() == MAX_TAKE) break;
 				
@@ -88,7 +90,9 @@ public class MyMailPool implements IMailPool {
 				
 			}
 			
-			
+			/* If its holding a priority item, or the first regular 
+			 * item has a high enough priority, deliver as much as possible
+			 */
 			if (priority || (!items.isEmpty() && scoreEstimate(items.get(0)) > 30)) {
 				for (MailItem i : items) {
 					if (temp.size() == MAX_TAKE) break;
