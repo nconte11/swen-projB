@@ -1,6 +1,7 @@
 package automail;
 
 import exceptions.FragileItemBrokenException;
+import exceptions.ItemTooHeavyException;
 import strategies.IMailPool;
 
 public class CarefulRobot extends Robot {
@@ -16,16 +17,11 @@ public class CarefulRobot extends Robot {
 	}
 	
 	@Override
-	public void moveTowards(int destination) throws FragileItemBrokenException {
+	public void moveTowards(int destination) throws FragileItemBrokenException, ItemTooHeavyException {
 		
 		
 		if (counter == 1) {
-	        	if (getCurrent_floor() < destination) {
-	            	setCurrent_floor(getCurrent_floor() + 1);
-	        	}
-	        	else {
-	            	setCurrent_floor(getCurrent_floor() - 1);
-	        	}
+			super.moveTowards(destination);
 		}
 		
 		// Restricts counter to 0 or 1
