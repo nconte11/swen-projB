@@ -14,7 +14,7 @@ public abstract class Robot {
 
 	protected StorageTube tube;
 	
-    IMailDelivery delivery;
+    protected IMailDelivery delivery;
     protected final String id;
     /** Possible states the robot can be in */
     public enum RobotState { DELIVERING, WAITING, RETURNING }
@@ -23,12 +23,13 @@ public abstract class Robot {
     private int destination_floor;
     private IMailPool mailPool;
     private boolean receivedDispatch;
-    private int MAX_CAPACITY = 4;
 	private MailItem deliveryItem;
 	private int deliveryCounter;
-    
-    protected boolean weak = false;
+
+	protected int maxCapacity = 4;
+	
     protected boolean careful = false;
+    protected boolean weak = false;
     protected boolean hasFragile = false;
     
     /*
@@ -37,8 +38,8 @@ public abstract class Robot {
      * 
      */
     
-    public boolean isWeak()				{ return this.weak; }
     public boolean isCareful()			{ return this.careful; }
+    public boolean isWeak()				{ return this.weak; }
     public int getCurrent_floor() 		{ return current_floor; }
     public MailItem getDeliveryItem() 	{ return deliveryItem; }
 	public StorageTube getTube()			{ return tube; }
@@ -53,6 +54,7 @@ public abstract class Robot {
     
     public void setCurrent_floor(int current_floor)		{ this.current_floor = current_floor; }
     public void setDeliveryItem(MailItem deliveryItem)	{ this.deliveryItem = deliveryItem; }
+    public void createTube()								{ tube = new StorageTube(maxCapacity); }
     public void dispatch() 								{ receivedDispatch = true; }
     public void setHasFragile(boolean hasFragile)		{ this.hasFragile = hasFragile; }
 
@@ -78,6 +80,7 @@ public abstract class Robot {
     public void setup(IMailDelivery delivery, IMailPool mailPool) {
         this.delivery = delivery;
         this.mailPool = mailPool;
+        createTube();
     }
     
     /**
@@ -144,6 +147,7 @@ public abstract class Robot {
     					/** If there are more items, set the robot's route to the location to deliver the item */
     					else {
     						setRoute();
+        					changeState(RobotState.DELIVERING);
     					}
     					
     				}

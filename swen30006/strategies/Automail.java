@@ -1,12 +1,8 @@
 package strategies;
 
-import automail.BigRobot;
-import automail.CarefulRobot;
 import automail.IMailDelivery;
 import automail.Robot;
 import automail.RobotFactory;
-import automail.StandardRobot;
-import automail.WeakRobot;
 
 public class Automail {
 	      
@@ -28,7 +24,7 @@ public class Automail {
 	    	
 	    	for (int i = 0; i < robots.length; i++) {
 	    		robot[i] = robotFactory.createRobot(robots[i]);
-	    		robot[i].setup(delivery, mailPool);
+	    		robot[i].setup(delivery, this.mailPool);
 	    	}
     }
     
