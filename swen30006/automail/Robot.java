@@ -61,19 +61,22 @@ public abstract class Robot {
      * @param mailPool is the source of mail items
      * @param strong is whether the robot can carry heavy items
      */
-    public Robot(IMailDelivery delivery, IMailPool mailPool){
+    public Robot(){
     	id = "R" + hashCode();
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
-        this.delivery = delivery;
-        this.mailPool = mailPool;
         this.receivedDispatch = false;
         this.deliveryCounter = 0;
     }
     
     
-
+    
+    public void setup(IMailDelivery delivery, IMailPool mailPool) {
+        this.delivery = delivery;
+        this.mailPool = mailPool;
+    }
+    
     /**
      * This is called on every time step
      * @throws ExcessiveDeliveryException if robot delivers more than the capacity of the tube without refilling

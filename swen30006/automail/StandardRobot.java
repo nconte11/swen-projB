@@ -6,8 +6,8 @@ public class StandardRobot extends Robot {
 	
 	private int MAX_CAPACITY = 4;
 
-	public StandardRobot(IMailDelivery delivery, IMailPool mailPool) {
-		super(delivery, mailPool);
+	public StandardRobot() {
+		super();
 		super.tube = new StorageTube(this.MAX_CAPACITY);
 	}
 

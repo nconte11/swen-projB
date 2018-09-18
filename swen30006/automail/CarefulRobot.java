@@ -8,8 +8,8 @@ public class CarefulRobot extends Robot {
 	private int MAX_CAPACITY = 3;
 	private int counter = 0;
 
-	public CarefulRobot(IMailDelivery delivery, IMailPool mailPool) {
-		super(delivery, mailPool);
+	public CarefulRobot() {
+		super();
 		super.tube = new StorageTube(this.MAX_CAPACITY);
 		super.careful = true;
 		
