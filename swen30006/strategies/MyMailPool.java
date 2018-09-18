@@ -1,24 +1,20 @@
 package strategies;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.ListIterator;
-import java.util.function.Consumer;
-
 import automail.Building;
 import automail.MailItem;
 import automail.PriorityMailItem;
 import automail.Robot;
 import automail.StorageTube;
 import exceptions.TubeFullException;
-//import strategies.MyMailPool.Item;
 import exceptions.FragileItemBrokenException;
 
 public class MyMailPool implements IMailPool {
 	private int MAX_TAKE;	
 	
 	private ArrayList<Robot> allRobots;
+	
+	// one pool for each type of mail
 	private ArrayList<MailItem> items;
 	private ArrayList<MailItem> priorityItems;
 
@@ -68,6 +64,8 @@ public class MyMailPool implements IMailPool {
 				if (temp.size() == MAX_TAKE) break;
 				
 				if (i.getFragile()) {
+					/* only a careful robot that doesn't already have fragile mail
+					can pick up fragile mail */
 					if (robot.isCareful() && !robot.getHasFragile()) {
 						temp.add(i);
 						priority = true;
@@ -75,6 +73,7 @@ public class MyMailPool implements IMailPool {
 					}
 				}
 				
+				// only strong robots can pick up heavy mail
 				else if (i.getWeight() >= 2000) {
 					if (!robot.isWeak()) {
 						temp.add(i);
@@ -88,6 +87,7 @@ public class MyMailPool implements IMailPool {
 				}
 				
 			}
+			
 			
 			if (priority || (!items.isEmpty() && scoreEstimate(items.get(0)) > 30)) {
 				for (MailItem i : items) {
@@ -112,8 +112,10 @@ public class MyMailPool implements IMailPool {
 				}
 			}
 			
+			// make sure the robots aren't constantly travelling up and down the floors
 			temp.sort((a, b) -> b.getDestFloor() - a.getDestFloor());
 			
+			// put the mail in the tube and remove them from the pools
 			if (!temp.isEmpty()) {
 				while (!temp.isEmpty()) {
 					MailItem item = temp.remove(0);

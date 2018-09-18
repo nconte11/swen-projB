@@ -3,6 +3,7 @@ package automail;
 import exceptions.FragileItemBrokenException;
 import exceptions.ItemTooHeavyException;
 
+// Robot that can carry fragile mail because it's slow and carries less
 public class CarefulRobot extends Robot {
 	private final static int MAX_CAPACITY = 3;
 	private int counter = 0;

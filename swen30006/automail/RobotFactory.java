@@ -1,4 +1,5 @@
 package automail;
+// Class that creates the Robot types specified by Automail.properties
 
 public class RobotFactory {
 	public Robot createRobot(String robotType) {

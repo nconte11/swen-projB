@@ -30,6 +30,7 @@ public abstract class Robot {
 	
     protected boolean careful = false;
     protected boolean weak = false;
+    // used to check if a CarefulRobot is already carrying fragile mail
     protected boolean hasFragile = false;
     
     /*
@@ -68,7 +69,6 @@ public abstract class Robot {
      */
     public Robot(){
     	id = "R" + hashCode();
-        // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
         this.receivedDispatch = false;
@@ -95,6 +95,7 @@ public abstract class Robot {
     				/** If its current position is at the mailroom, then the robot should change state */
     				if (current_floor == Building.MAILROOM_LOCATION) {
     					
+    					// CarefulRobot is no longer carrying a fragile item
     					this.hasFragile = false;
     					
     					/** Return any items to the pool that it is still carrying */
@@ -104,7 +105,6 @@ public abstract class Robot {
     						
     						System.out.printf("T: %3d > old addToPool [%s]%n", Clock.Time(), mailItem.toString());
     					}
-
     					
     					mailPool.registerWaiting(this);
     					changeState(RobotState.WAITING);
@@ -143,7 +143,6 @@ public abstract class Robot {
     						changeState(RobotState.RETURNING);
     					}
     					
-    					
     					/** If there are more items, set the robot's route to the location to deliver the item */
     					else {
     						setRoute();
@@ -156,9 +155,7 @@ public abstract class Robot {
     				else {
     					moveTowards(destination_floor);
     				}
-    				
     				break;
-    		
     		}
     }
 
