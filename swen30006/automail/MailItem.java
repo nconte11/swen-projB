@@ -20,6 +20,10 @@ public class MailItem {
     protected final int weight;
     /** Whether the mail item is fragile */
     protected final boolean fragile;
+    
+    public boolean isFragile() {
+    	return fragile;
+    }
 
     /**
      * Constructor for a MailItem
