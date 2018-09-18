@@ -27,10 +27,10 @@ public class Automail {
     	
     	/** Initialize robots */
     	robot = new Robot[4];
-    	robot[0] = new WeakRobot(delivery, mailPool, weak, notCareful);
-    	robot[1] = new StandardRobot(delivery, mailPool, strong, notCareful);
-    	robot[2] = new BigRobot(delivery, mailPool, strong, notCareful);
-    	robot[3] = new CarefulRobot(delivery, mailPool, strong, careful);
+	    	robot[0] = new WeakRobot(delivery, mailPool);
+	    	robot[1] = new StandardRobot(delivery, mailPool);
+	    	robot[2] = new BigRobot(delivery, mailPool);
+	    	robot[3] = new CarefulRobot(delivery, mailPool);
     }
     
 }

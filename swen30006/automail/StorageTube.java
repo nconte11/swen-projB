@@ -51,9 +51,8 @@ public class StorageTube {
         if(tube.size() < MAXIMUM_CAPACITY){
         	if (tube.isEmpty()) {
         		tube.add(item);
-        	} else if (item.getFragile() || tube.peek().getFragile()) {
-        		throw new FragileItemBrokenException();
-        	} else {
+        	}
+        else {
         		tube.add(item);
         	}
         } else {

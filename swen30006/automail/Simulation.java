@@ -104,7 +104,7 @@ public class Simulation {
             /* priority = */ mailGenerator.step();
             try {
                 automail.mailPool.step();
-				for (int i=0; i<3; i++) automail.robot[i].step();
+				for (int i=0; i< automail.robot.length; i++) automail.robot[i].step();
 			} catch (ExcessiveDeliveryException|ItemTooHeavyException|FragileItemBrokenException e) {
 				e.printStackTrace();
 				System.out.println("Simulation unable to complete.");
