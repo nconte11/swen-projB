@@ -13,7 +13,7 @@ public class CarefulRobot extends Robot {
 		
 	}
 	
-	@Override
+	/*@Override
 	public void moveTowards(int destination) throws FragileItemBrokenException {
 		int counter = 0;
 		if (counter % 2 == 1) {
@@ -26,6 +26,6 @@ public class CarefulRobot extends Robot {
         	}
 		}
         counter++;
-    }
+    }*/
 
 }

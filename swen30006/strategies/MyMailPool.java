@@ -80,22 +80,19 @@ public class MyMailPool implements IMailPool {
 		StorageTube temp = new StorageTube(robot.getTube().MAXIMUM_CAPACITY);
 		
 		try { 
-			// check if it's a careful robot, go through the pool to find a fragile item		
+			
+			// check if it's a careful robot, if first element is fragile, pick it up
 			if (robot.isCareful()) {
-				ListIterator<Item> i = pool.listIterator();
-				while (tube.isEmpty() && i.hasNext()) {
-					Item item = i.next();
-					if (item.fragile) {
-						temp.addItem(item.mailItem);
-						if (!item.heavy) lightCount--;
-						i.remove();
-					}
-				}
+				
+				Item item = pool.pop();
+				temp.addItem(item.mailItem);
+				if (!item.heavy) lightCount--;
+				
 			}
 			
 			// if the tube isn't empty, it's a careful robot holding a fragile item
-			if (tube.isEmpty()) {
 				
+			if (temp.isEmpty() || !temp.peek().isFragile())
 				if (robot.isStrong()) {
 					ListIterator<Item> i = pool.listIterator();
 					// if tube isn't full, and the robot hasn't gone through the whole list
@@ -126,7 +123,6 @@ public class MyMailPool implements IMailPool {
 					while (!temp.isEmpty()) tube.addItem(temp.pop());
 					robot.dispatch();
 				}
-			}
 		}
 		catch(TubeFullException e){
 			e.printStackTrace();
