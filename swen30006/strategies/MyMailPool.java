@@ -97,8 +97,9 @@ public class MyMailPool implements IMailPool {
 				if (temp.isFull()) break;
 				
 				if (i.getFragile()) {
-					if (robot.isCareful()) {
+					if (robot.isCareful() && !robot.getHasFragile()) {
 						temp.addItem(i);
+						robot.setHasFragile(true);
 					}
 				}
 				

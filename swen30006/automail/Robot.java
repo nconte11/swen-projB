@@ -29,6 +29,7 @@ public abstract class Robot {
     
     protected boolean weak = false;
     protected boolean careful = false;
+    protected boolean hasFragile = false;
     
     /*
      * 
@@ -41,6 +42,7 @@ public abstract class Robot {
     public int getCurrent_floor() 		{ return current_floor; }
     public MailItem getDeliveryItem() 	{ return deliveryItem; }
 	public StorageTube getTube()			{ return tube; }
+	public boolean getHasFragile()		{ return hasFragile; }
     
     
     /*
@@ -52,6 +54,7 @@ public abstract class Robot {
     public void setCurrent_floor(int current_floor)		{ this.current_floor = current_floor; }
     public void setDeliveryItem(MailItem deliveryItem)	{ this.deliveryItem = deliveryItem; }
     public void dispatch() 								{ receivedDispatch = true; }
+    public void setHasFragile(boolean hasFragile)		{ this.hasFragile = hasFragile; }
 
     /**
      * Initiates the robot's location at the start to be at the mailroom
@@ -88,6 +91,8 @@ public abstract class Robot {
     				
     				/** If its current position is at the mailroom, then the robot should change state */
     				if (current_floor == Building.MAILROOM_LOCATION) {
+    					
+    					this.hasFragile = false;
     					
     					/** Return any items to the pool that it is still carrying */
     					while (!tube.isEmpty()) {
